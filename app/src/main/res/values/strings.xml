@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Alexa</string>
+
+    <!-- General Info Fragment -->
+    <string name="general_info_title">General Info</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="gender">Gender<font color="#FF0000">*</font></string>
+    <string name="weight">Weight in kg<font color="#FF0000">*</font></string>
+    <string name="height">Height in cm<font color="#FF0000">*</font></string>
+    <string name="age">Age<font color="#FF0000">*</font></string>
+    <string name="next_btn">Next</string>
+    <string name="all_fields_required">All fields are required</string>
+
+    <!--  Procedure Fragment  -->
+    <string name="procedure_title">How to use?</string>
+    <string name="instructions">- Lightly place your index finger on \n   the rear camera.\n- Make sure the camera is fully \n   covered. \n- Measure in a shaded environment. \n- Don\'t move your finger until the \n   measurement is complete. \n- Finally place your finger then press \n   start. </string>
+
+</resources>

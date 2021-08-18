@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_map"
+    app:startDestination="@+id/fragment_general_info">
+
+    <fragment
+        android:id="@+id/fragment_general_info"
+        android:name="com.inderbagga.vitals.ui.GeneralInfo"
+        android:label="@string/general_info_title"
+        tools:layout="@layout/fragment_general_info"/>
+
+    <fragment
+        android:id="@+id/fragment_procedure"
+        android:name="com.inderbagga.vitals.ui.Procedure"
+        android:label="@string/procedure_title"
+        tools:layout="@layout/fragment_procedure"/>
+
+</navigation>
