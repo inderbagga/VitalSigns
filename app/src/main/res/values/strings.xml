@@ -16,4 +16,19 @@
     <string name="procedure_title">How to use?</string>
     <string name="instructions">- Lightly place your index finger on \n   the rear camera.\n- Make sure the camera is fully \n   covered. \n- Measure in a shaded environment. \n- Don\'t move your finger until the \n   measurement is complete. \n- Finally place your finger then press \n   start. </string>
 
+  <!--  Process Fragment  -->
+    <string name="process_title">Monitoring the Vital Signs ...</string>
+    <string name="title_sex">Sex</string>
+    <string name="title_age">Age</string>
+    <string name="title_weight">Weight</string>
+    <string name="title_height">Height</string>
+
+    <!--Result Fragment  -->
+    <string name="result_title">Vital Signs</string>
+    <string name="heart_rate">Heart Rate</string>
+    <string name="respiration_rate">Respiration Rate</string>
+    <string name="blood_pressure">Blood Pressure</string>
+    <string name="O2_saturation">O2 Saturation</string>
+    <string name="title_activity_settings">Settings</string>
+
 </resources>

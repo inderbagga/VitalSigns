@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -16,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.inderbagga.vitals.R;
 
@@ -30,15 +30,15 @@ public class Procedure extends Fragment {
         btnStart = root.findViewById(R.id.btn_start);
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
 
                 if (ContextCompat.checkSelfPermission(
                         getActivity(), Manifest.permission.CAMERA) ==
                         PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getActivity(),"Starting the process.",Toast.LENGTH_LONG).show();
+                    Navigation.findNavController(view).navigate(R.id.fragment_process,getArguments());
                 }
                 else
-                   askOrEnableCameraPermission();
+                    askOrEnableCameraPermission();
             }
         });
         return root;
@@ -51,7 +51,7 @@ public class Procedure extends Fragment {
     private ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted)
-                    Toast.makeText(getActivity(),"Starting the process.",Toast.LENGTH_LONG).show();
+                    btnStart.performClick();
                 else if(!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)){
                     AlertDialog.Builder alertDialog=new AlertDialog.Builder(getActivity());
                     alertDialog.setTitle(getString(R.string.app_name)+" says,")

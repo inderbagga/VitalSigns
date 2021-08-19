@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.inderbagga.vitals.R;
-import com.inderbagga.vitals.model.Sex;
 
 public class GeneralInfo extends Fragment {
 
@@ -63,22 +62,19 @@ public class GeneralInfo extends Fragment {
                 String weight = etWeight.getText().toString();
                 String height = etHeight.getText().toString();
                 String age = etAge.getText().toString();
-                Sex sex;
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("age", Integer.parseInt(age));
+                bundle.putInt("height", Integer.parseInt(height));
+                bundle.putInt("weight", Integer.parseInt(weight));
 
                 if (!TextUtils.isEmpty(age) && !TextUtils.isEmpty(height) && !TextUtils.isEmpty(weight) && radioGroup.getCheckedRadioButtonId() != -1) {
-                    if (rbFemale.isChecked()) {
-                        sex = Sex.Female;
-                    } else {
-                        sex = Sex.Male;
-                    }
-              /*      profile.setAge(Integer.parseInt(age));
-                    profile.setHeight(Double.parseDouble(height));
-                    profile.setWeight(Double.parseDouble(weight));
-                    profile.setSex(sex);
-                    return profile;*/
+                    if (rbFemale.isChecked())
+                        bundle.putInt("sex", 1);
+                    else
+                        bundle.putInt("sex", 2);
 
-                    Navigation.findNavController(view).navigate(R.id.fragment_procedure);
-
+                    Navigation.findNavController(view).navigate(R.id.fragment_procedure,bundle);
                 } else
                     Toast.makeText(getActivity(),getString(R.string.all_fields_required),Toast.LENGTH_LONG).show();
             }

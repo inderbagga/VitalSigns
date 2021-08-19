@@ -17,4 +17,16 @@
         android:label="@string/procedure_title"
         tools:layout="@layout/fragment_procedure"/>
 
+    <fragment
+        android:id="@+id/fragment_process"
+        android:name="com.inderbagga.vitals.ui.Process"
+        android:label="@string/process_title"
+        tools:layout="@layout/fragment_process"/>
+
+    <fragment
+        android:id="@+id/fragment_result"
+        android:name="com.inderbagga.vitals.ui.Result"
+        android:label="@string/result_title"
+        tools:layout="@layout/fragment_result"/>
+
 </navigation>
