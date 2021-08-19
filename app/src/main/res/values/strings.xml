@@ -22,6 +22,9 @@
     <string name="title_age">Age</string>
     <string name="title_weight">Weight</string>
     <string name="title_height">Height</string>
+    <string name="poor_intensity"><font color="#FF0000">Poor red intensity.</font></string>
+    <string name="no_frame"><font color="#FF0000">No frame to process further.</font></string>
+    <string name="measure_failed"><font color="#FF0000">Measurement failed.</font></string>
 
     <!--Result Fragment  -->
     <string name="result_title">Vital Signs</string>

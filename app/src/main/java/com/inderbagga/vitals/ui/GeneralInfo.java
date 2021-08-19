@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.inderbagga.vitals.R;
@@ -27,9 +26,7 @@ public class GeneralInfo extends Fragment {
     private EditText etAge;
     private EditText etWeight;
     private EditText etHeight;
-    private TextView tvRequiredWarning;
     private RadioButton rbFemale;
-    private RadioButton rbMale;
     private RadioGroup radioGroup;
 
     @Nullable
@@ -42,9 +39,7 @@ public class GeneralInfo extends Fragment {
         etWeight = view.findViewById(R.id.et_weight);
         etHeight = view.findViewById(R.id.et_height);
         etAge = view.findViewById(R.id.et_age);
-        tvRequiredWarning = view.findViewById(R.id.tv_required_warning);
         rbFemale = view.findViewById(R.id.rb_female);
-        rbMale = view.findViewById(R.id.rb_male);
         radioGroup = view.findViewById(R.id.radioGroup);
         return view;
     }

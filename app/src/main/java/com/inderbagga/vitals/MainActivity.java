@@ -2,8 +2,9 @@ package com.inderbagga.vitals;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.Navigation;
+
 import android.os.Bundle;
-import android.view.WindowManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,13 +20,14 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialog=new AlertDialog.Builder(this);
 
         alertDialog.setTitle(getString(R.string.app_name)+" says,")
-                .setMessage("Are you sure, you want to exit?")
-                .setNegativeButton("Yes", (dialog, WhichButton) -> {
+                .setMessage("You may select below options?")
+                .setNegativeButton("Exit", (dialog, WhichButton) -> {
                     dialog.cancel();
                     finish();
                 })
-                .setPositiveButton("No", (dialog, WhichButton) -> {
+                .setPositiveButton("Reset", (dialog, WhichButton) -> {
                     dialog.cancel();
+                    Navigation.findNavController(this.findViewById(R.id.nav_host_fragment)).navigate(R.id.fragment_general_info);
                 })
                 .setCancelable(true)
                 .create()
