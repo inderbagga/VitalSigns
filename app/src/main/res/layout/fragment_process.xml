@@ -13,7 +13,7 @@
         android:layout_marginTop="18dp"
         android:layout_marginEnd="10dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/preview"
+        app:layout_constraintBottom_toTopOf="@+id/frame"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -117,27 +117,42 @@
         </LinearLayout>
     </LinearLayout>
 
-    <SurfaceView
-        android:id="@+id/preview"
+    <FrameLayout
         android:layout_width="fill_parent"
+        android:id="@+id/frame"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_margin="5dp"
         app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout2" />
+        app:layout_constraintTop_toBottomOf="@id/linearLayout2">
+
+        <SurfaceView
+            android:id="@+id/preview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            />
+
+        <TextView
+            android:id="@+id/errorView"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/white"/>
+    </FrameLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="100dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:indeterminate="false"
-        android:max="26"
+        android:max="100"
         android:progress="1"
-        app:layout_constraintTop_toBottomOf="@+id/preview"
+        app:layout_constraintTop_toBottomOf="@+id/frame"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -148,17 +163,7 @@
         android:gravity="center"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/errorView"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar"/>
-
-    <TextView
-        android:id="@+id/errorView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:gravity="center"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/statusView"/>
+        app:layout_constraintTop_toBottomOf="@+id/progressBar"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

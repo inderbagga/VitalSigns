@@ -2,6 +2,8 @@ package com.inderbagga.vitals.ui;
 
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -41,8 +43,11 @@ public class Process extends Fragment {
     public int inc = 0;
 
     //Beats variable
-    public int Beats = 0;
-    public double bufferAvgB = 0;
+    public int beats = 0;
+    public double beatsAvg = 0;
+    //RR variable
+    public int breath = 0;
+    public double breathAvg = 0;
 
     //Freq + timer variable
     private static long startTime = 0;
@@ -55,10 +60,6 @@ public class Process extends Fragment {
     double stdDevBlue= 0;
     double sumRed = 0;
     double sumBlue = 0;
-
-    //RR variable
-    public int Breath = 0;
-    public double bufferAvgBr = 0;
 
     //BloodPressure variables
     public double age, height, weight;
@@ -94,7 +95,7 @@ public class Process extends Fragment {
             tvUserSex.setText("Male");
         }
 
-        tvUserAge.setText(age+"");
+        tvUserAge.setText(String.valueOf(age));
         tvUserWeight.setText(weight + " kg");
         tvUserHeight.setText(height + " cm");
 
@@ -158,12 +159,12 @@ public class Process extends Fragment {
             avgBlue = ImageProcessing.decodeYUV420SPtoRedBlueGreenAvg(data.clone(), height, width, 2); //Getting Blue intensity after applying image processing on frame data, 2 stands for blue
             sumBlue = sumBlue + avgBlue; //Summing Red intensity for the whole period of recording which is 30 second
 
-            //Adding RGB intensity values to listofarrays
+            //Adding RGB intensity values to listOfArrays
             avgGreenList.add(avgGreen);
             avgRedList.add(avgRed);
             avgBlueList.add(avgBlue);
 
-            ++frames; //counts the number of frames for the whole period of recording " 30 s "
+            ++frames; //counts the number of frames for the whole period of recording " 15 s "
 
             //To check if we got a good red intensity to process if not return to the condition and set it again until we get a good red intensity
             if (avgRed < 200) {
@@ -171,7 +172,7 @@ public class Process extends Fragment {
                 progressValue = inc;
                 frames = 0;
                 progressBar.setProgress(progressValue);
-                errorView.setText(Html.fromHtml(getString(R.string.poor_intensity)));
+                updateUI(1);
                 processing.set(false);
             }
 
@@ -187,21 +188,21 @@ public class Process extends Fragment {
                 SamplingFreq = (frames / totalTimeInSecs); //calculating sampling frequency
 
                 if(frames==0){
-                    errorView.setText(Html.fromHtml(getString(R.string.no_frame)));
+                    updateUI(2);
                     return;
                 }
 
                 //sending the rg arrays with the counter to make an fft process to get the heartbeats out of it
-                double HRFreq = Fft.FFT(greenArray, frames, SamplingFreq);
-                double bpm = (int) ceil(HRFreq * 60);
-                double HR1Freq = Fft.FFT(redArray, frames, SamplingFreq);
-                double bpm1 = (int) ceil(HR1Freq * 60);
+                double beatGreenFreq = Fft.FFT(greenArray, frames, SamplingFreq);
+                double bpmGreen = (int) ceil(beatGreenFreq * 60);
+                double beatRedFreq = Fft.FFT(redArray, frames, SamplingFreq);
+                double bpmRed = (int) ceil(beatRedFreq * 60);
 
                 //sending the rg arrays with the counter to make an fft process then a bandpass filter to get the respiration rate out of it
-                double RRFreq = Fft2.FFT(greenArray, frames, SamplingFreq);
-                double breath = (int) ceil(RRFreq * 60);
-                double RR1Freq = Fft2.FFT(redArray, frames, SamplingFreq);
-                double breath1 = (int) ceil(RR1Freq * 60);
+                double rrGreenFreq = Fft2.FFT(greenArray, frames, SamplingFreq);
+                double greenBreath = (int) ceil(rrGreenFreq * 60);
+                double rrRedFreq = Fft2.FFT(redArray, frames, SamplingFreq);
+                double redBreath = (int) ceil(rrRedFreq * 60);
 
                 //calculating the mean of red and blue intensities on the whole period of recording
                 double meanRed = sumRed / frames;
@@ -228,42 +229,42 @@ public class Process extends Fragment {
                 o2 = (int) (spo2);
 
                 //comparing if heartbeat and Respiration rate are reasonable from the green and red intensities then take the average, otherwise value from green or red intensity if one of them is good and other is bad.
-                if ((bpm > 45 || bpm < 200) || (breath > 10 || breath < 20)) {
-                    if ((bpm1 > 45 || bpm1 < 200) || (breath1 > 10 || breath1 < 24)) {
+                if ((bpmGreen > 45 || bpmGreen < 200) || (greenBreath > 10 || greenBreath < 20)) {
+                    if ((bpmRed > 45 || bpmRed < 200) || (redBreath > 10 || redBreath < 24)) {
 
-                        bufferAvgB = (bpm + bpm1) / 2;
-                        bufferAvgBr = (breath + breath1) / 2;
+                        beatsAvg = (bpmGreen + bpmRed) / 2;
+                        breathAvg = (greenBreath + redBreath) / 2;
 
                     } else {
-                        bufferAvgB = bpm;
-                        bufferAvgBr = breath;
+                        beatsAvg = bpmGreen;
+                        breathAvg = greenBreath;
                     }
-                } else if ((bpm1 > 45 || bpm1 < 200) || (breath1 > 10 || breath1 < 20)) {
-                    bufferAvgB = bpm1;
-                    bufferAvgBr = breath1;
+                } else if ((bpmRed > 45 || bpmRed < 200) || (redBreath > 10 || redBreath < 20)) {
+                    beatsAvg = bpmRed;
+                    breathAvg = redBreath;
                 }
 
                 //if the values of hr and o2 are not reasonable then show a toast that measurement failed and restart the progress bar and the whole recording process for another 30 seconds
-                if ((bufferAvgB < 45 || bufferAvgB > 200) || (bufferAvgBr < 10 || bufferAvgBr > 24)) {
+                if ((beatsAvg < 45 || beatsAvg > 200) || (breathAvg < 10 || breathAvg > 24)) {
                     inc = 0;
                     progressValue = inc;
                     progressBar.setProgress(progressValue);
-                    errorView.setText("Measurement failed.");
+                    updateUI(3);
                     startTime = System.currentTimeMillis();
                     frames = 0;
                     processing.set(false);
                     return;
                 }
 
-                Beats = (int) bufferAvgB;
-                Breath = (int) bufferAvgBr;
+                beats = (int) beatsAvg;
+                breath = (int) breathAvg;
 
                 //estimations to estimate the blood pressure
                 double ROB = 18.5;
-                double ET = (364.5 - 1.23 * Beats);
+                double ET = (364.5 - 1.23 * beats);
                 double BSA = 0.007184 * (Math.pow(weight, 0.425)) * (Math.pow(height, 0.725));
-                double SV = (-6.6 + (0.25 * (ET - 35)) - (0.62 * Beats) + (40.4 * BSA) - (0.51 * age));
-                double PP = SV / ((0.013 * weight - 0.007 * age - 0.004 * Beats) + 1.307);
+                double SV = (-6.6 + (0.25 * (ET - 35)) - (0.62 * beats) + (40.4 * BSA) - (0.51 * age));
+                double PP = SV / ((0.013 * weight - 0.007 * age - 0.004 * beats) + 1.307);
                 double MPP = Q * ROB;
 
                 SP = (int) (MPP + 3 / 2 * PP);
@@ -271,27 +272,62 @@ public class Process extends Fragment {
             }
 
             //if all those variable contains a valid values then display the results
-            if ((Beats != 0) && (SP != 0) && (DP != 0) && (o2 != 0) && (Breath != 0)) {
+            if ((beats != 0) && (SP != 0) && (DP != 0) && (o2 != 0) && (breath != 0)) {
+
+                statusView.setText("Frame:"+frames+",Progress: 100%"+",Time:"+totalTimeInSecs);
 
                 Bundle bundle = new Bundle();
                 bundle.putInt("SP", SP);
                 bundle.putInt("DP", DP);
-                bundle.putInt("BPM", Beats);
-                bundle.putInt("breath", Breath);
+                bundle.putInt("BPM", beats);
+                bundle.putInt("breath", breath);
                 bundle.putInt("O2R", o2);
 
-                Navigation.findNavController(Process.super.getView()).navigate(R.id.fragment_result,bundle);
-            }
+                new java.util.Timer().schedule(
+                        new java.util.TimerTask() {
+                            @Override
+                            public void run() {
+                                Navigation.findNavController(statusView).navigate(R.id.fragment_result,bundle);
+                            }
+                        },
+                        2000
+                );
+           }
 
             //keeps incrementing the progress bar and keeps the loop until we have a valid values for the previous if state
             if (avgRed != 0) {
-                progressValue = inc++ / 34;
-                statusView.setText("Frame:"+frames+",Progress:"+progressValue+",Time:"+totalTimeInSecs);
+                progressValue = (int)((inc++ / 33)*3.5);
+                statusView.setText("Frame:"+frames+",Progress:"+progressValue+"%,Time:"+totalTimeInSecs);
                 progressBar.setProgress(progressValue);
             }
             processing.set(false);
         }
     };
+
+    private void updateUI(int type) {
+
+        switch (type){
+            case 1: errorView.setText(Html.fromHtml(getString(R.string.poor_intensity)));  break;
+            case 2: errorView.setText(Html.fromHtml(getString(R.string.no_frame)));  break;
+            case 3: errorView.setText("Measurement failed. Restarting.");  break;
+        }
+
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                errorView.setText("");
+                            }
+                        });
+                    }
+                },
+                3000
+        );
+    }
 
     private SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
 
